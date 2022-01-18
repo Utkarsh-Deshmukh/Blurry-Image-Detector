@@ -51,13 +51,13 @@ class MLP(nn.Module):
 
 ## Results:
 
-| Folder Name       | accuracy      | 
-| -------------     |:-------------:| 
-| sharp             | 72.85% | 
-| defocussed blurred| 99.42%  | 
-| motion blurred    | 95.14%  | 
+| Folder Name       | accuracy (without balancing training data)      |  accuracy (with balanced train data) |
+| -------------     |:-------------:|:-------------:|
+| sharp             | 72.85%  |  86.57%|
+| defocussed blurred| 99.42%  | 98.57%|
+| motion blurred    | 95.14%  | 88.28%|
 
-***Note: We can see that the accuracy of the prediction for sharp images is substantially lower than the other two. This is because we have an imbalanced training set. The total number of blurry images in training is 2 times the sharp images. If we balance the dataset, we should see an improvement. If we neglect the motion blur images, and only use the out-of focus images and the sharp images, the performance is as follows:***
+***Note: If we neglect the motion blur images, and only use the out-of focus images and the sharp images, the performance is as follows:***
 | Folder Name       | accuracy      | 
 | -------------     |:-------------:| 
 | sharp             | 95.428% | 
