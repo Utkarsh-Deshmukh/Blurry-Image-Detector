@@ -53,15 +53,15 @@ class MLP(nn.Module):
 
 | Folder Name       | accuracy (without balancing training data)      |  accuracy (with balanced train data) |
 | -------------     |:-------------:|:-------------:|
-| sharp             | 72.85%  |  86.57%|
-| defocussed blurred| 99.42%  | 98.57%|
-| motion blurred    | 95.14%  | 88.28%|
+| sharp             | 72.85%  |  91.71%|
+| defocussed blurred| 99.42%  | 98 %|
+| motion blurred    | 95.14%  | 85.71%|
 
 ***Note: If we neglect the motion blur images, and only use the out-of focus images and the sharp images, the performance is as follows:***
 | Folder Name       | accuracy      | 
 | -------------     |:-------------:| 
-| sharp             | 95.428% | 
-| defocussed blurred| 96.285% | 
+| sharp             | 96.85% | 
+| defocussed blurred| 95.14% | 
 
 
 ## Limitations:
