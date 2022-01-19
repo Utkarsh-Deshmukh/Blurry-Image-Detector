@@ -7,7 +7,7 @@ in case of motion blur, it can be caused due to two reasons:
   1) Camera being in motion - this causes the entire image to have motion blur
   2) Object in motion - this causes only the object to be blurry while the rest of the image is sharp.
 
-In order to identify the motion blur with object in motion, please look at this repo: https://github.com/Utkarsh-Deshmukh/Spatially-Varying-Blur-Detection-python
+In order to identify spatially varying blur such as the motion blur with object-in-motion, please look at this repo: https://github.com/Utkarsh-Deshmukh/Spatially-Varying-Blur-Detection-python
 
 In this particular repo, we will address the "out-of-focus" blur, and motion blur(camera in motion)
 
@@ -21,7 +21,7 @@ In this project, we will quantify the energy in the high-frequency content of th
 
 - **Step 2: Feature Extraction:** In this step, we divide the image into non overlapping blocks and do a feature extraction for each block. we run this only in the region where the ROI is estimated. For each block, we compute the discrete cosine transform, and select the bottom right triangular elements from the DCT coefficients (The bottom right elements are the "high-frequency coefficients"). These elements are sorted and this sorted vector is used as the feature descriptor to train a multi-layer perceptron
 
-- **Step 3: MultiLayer Perceptron:**  We use a multilayer perceptron with 3 fully connected layersas a classifier. The perceptron model is definer as below:
+- **Step 3: MultiLayer Perceptron:**  We use a multilayer perceptron with 3 fully connected layers as a classifier. The perceptron model is defined as below:
 ```
 class MLP(nn.Module):
     def __init__(self, data_dim):
@@ -43,13 +43,17 @@ class MLP(nn.Module):
         return c
 ```
 
-## Implementation details:
- - **Dataset**: The blur image dataset from Kaggle is used for training and testing. The dataset can be found here: https://www.kaggle.com/kwentar/blur-dataset
-
+## Results:
+ - **Dataset1**: The blur image dataset from Kaggle is used for training and testing. The dataset can be found here: https://www.kaggle.com/kwentar/blur-dataset
 - For Training, 1/4 of the total images were used
 - For Testing, I use all the images in the dataset
+Feature extraction parameters used were as follows:
 
-## Results:
+```
+blockSize_feature_extractor = 32
+downsamplingFactor = 2
+valid_img_block_thresh = 0.6
+```
 
 | Folder Name       | accuracy (without balancing training data)      |  accuracy (with balanced train data) |
 | -------------     |:-------------:|:-------------:|
@@ -63,7 +67,23 @@ class MLP(nn.Module):
 | sharp             | 96.85% | 
 | defocussed blurred| 95.14% | 
 
+---
 
+ - **Dataset2**: The RealBlur Dataset **BSD-B** is used. The dataset can be found here: http://cg.postech.ac.kr/research/realblur/. The resolution of the images in this dataset is very different from that from the Kaggle dataset. The parameters used for this dataset are as follows:
+- For Training, 1/20 of the total images were used
+- For Testing, I use all the images in the dataset
+```
+blockSize_feature_extractor = 32
+downsamplingFactor = 1
+valid_img_block_thresh = 0.5
+```
+
+| Folder Name       |accuracy (with balanced train data) |
+| -------------     |:-------------:|
+| sharp             |91.63%  |
+| blurry            |97.19%  |
+
+---
 ## Limitations:
 - Currently, the algorithm runs at a single scale. One might consider using the approach at multi-scales to improve accuracy
 
@@ -74,4 +94,4 @@ class MLP(nn.Module):
 - In order to run the feature-extraction + training of the classifier, run the file `Train_main.py`
 - In order to run the prediction on images, run the file `Test_main.py`
 - A pretrained classifier is provided in the folder `trained_model`.
-- In the file `utils/feature_extractor.py` all the feature-extractor parameters are defined. if the parameter `blockSize_feature_extractor` or `downsamplingFactor` is changed, then the user needs to retrain the classifier (since these parameters directly affect the dimentionality of the feature vector)
+- In the file `utils/feature_extractor.py` all the feature-extractor parameters are defined. if the parameter `blockSize_feature_extractor` is changed, then the user needs to retrain the classifier (since this parameter directly affect the dimentionality of the feature vector)
