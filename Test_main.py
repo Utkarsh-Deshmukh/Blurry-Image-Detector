@@ -39,6 +39,8 @@ def is_image_blurry(trained_model, img, threshold=0.5):
     extracted_features = feature_extractor.extract_feature()
     extracted_features = np.array(extracted_features)
 
+    if(len(extracted_features) == 0):
+        return True
     test_data_loader = DataLoader(TestDataset(extracted_features), batch_size=1, shuffle=False)
 
     # trained_model.test()

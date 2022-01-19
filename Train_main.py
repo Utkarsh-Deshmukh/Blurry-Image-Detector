@@ -102,6 +102,44 @@ def compute_train_accuracy(trained_model, train_data):
     print(accuracy)
     return(accuracy)
 
+def balance_data(X_Train, Y_Train):
+    # Shuffle the samples
+    index_arr = [i for i in range(len(Y_Train))]
+    random.shuffle(index_arr)
+    X_shuffled = X_Train[index_arr, :]
+    Y_shuffled = Y_Train[index_arr]
+
+    # Seperate the samples in positive and negative bin
+    positive_idx = np.where(Y_shuffled == 1)
+    negative_idx = np.where(Y_shuffled == 0)
+    X_positive = X_shuffled[positive_idx]
+    X_negative = X_shuffled[negative_idx]
+    Y_positive = Y_shuffled[positive_idx]
+    Y_negative = Y_shuffled[negative_idx]
+
+    num_positive_samples = len(np.argwhere(Y_shuffled == 1))
+    num_negative_samples = len(np.argwhere(Y_shuffled == 0))
+
+    if(num_positive_samples < num_negative_samples):
+        selected_X_negative = X_negative[0:num_positive_samples, :]
+        selected_Y_negative = Y_negative[0:num_positive_samples]
+        selected_X_positive = X_positive
+        selected_Y_positive = Y_positive
+    else:
+        selected_X_negative = X_negative
+        selected_Y_negative = Y_negative
+        selected_X_positive = X_positive[0:num_positive_samples, :]
+        selected_Y_positive = Y_positive[0:num_positive_samples]
+
+    X_Train = np.concatenate((selected_X_positive, selected_X_negative), axis=0)
+    Y_Train = np.concatenate((selected_Y_positive, selected_Y_negative), axis=0)
+
+    train_data = []
+    for i in range(len(Y_Train)):
+        train_data.append(np.concatenate((X_Train[i], [Y_Train[i]])))
+
+    return(train_data)
+
 if __name__ == '__main__':
     dataset_dir = './dataset/defocused_blurred/'
     feature_data_blur = extract_feature_data(dataset_dir)
@@ -114,6 +152,12 @@ if __name__ == '__main__':
 
     train_data = compile_train_data(feature_data_blur, feature_data_sharp, feature_data_motion_blur)
 
+    # Balance the data
+    dim = np.shape(train_data)[1]-1
+    X_Train = train_data[:, 0:dim]
+    Y_Train = train_data[:, -1]
+
+    train_data = balance_data(X_Train, Y_Train)
     # Start the training
     batch_size = 1024
     num_epochs = 50
