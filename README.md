@@ -80,8 +80,8 @@ valid_img_block_thresh = 0.5
 
 | Folder Name       |accuracy (with balanced train data) |
 | -------------     |:-------------:|
-| sharp             |91.63%  |
-| blurry            |97.19%  |
+| sharp             |97.19%  |
+| blurry            |91.63%  |
 
 ---
 ## Limitations:
